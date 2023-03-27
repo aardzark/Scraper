@@ -1,6 +1,6 @@
 import scrapy
 import logging
-
+import asyncio
 
 class BooksSpider(scrapy.Spider):
     name: str = "quotes"
@@ -15,17 +15,24 @@ class BooksSpider(scrapy.Spider):
 
     def page_parse(self, response: scrapy.http.Response):
         current_url = response.url
-
-        '''
-        This is a recursive call to the book_parsing method. 
-        It will parse all books and then return control to the page_parsing method when finished.
-        '''
-        # yield scrapy.Request(url=current_url, callback=self.book_parse)
-
-        print(f'Current url: {current_url}')
+        print(f'Page url: {current_url}')
         catalogue_path = current_url[: current_url.rfind('/') + 1]
-        next_page = response.xpath('''//*[@id="default"]/div/div/div/div/
-                                    section/div[2]/div/ul/li[@class="next"]/a/@href''').get()
+        books_remaining = len(response.xpath('//*[@id="default"]/div/div/div/div/section/div[2]/ol/li'))
+
+        for i in range(books_remaining):
+            book = response.xpath(f'''
+                                    /html/body/div/div/div/div/section/
+                                    div[2]/ol/li[{i + 1}]/article/h3/a/@href
+                                    ''').get()
+
+            book_url = catalogue_path + book
+
+            yield scrapy.Request(url=book_url, callback=self.book_parse)
+
+        next_page = response.xpath('''
+                                    //*[@id="default"]/div/div/div/div/
+                                    section/div[2]/div/ul/li[@class="next"]/a/@href
+                                    ''').get()
 
         try:
             next_url = catalogue_path + next_page
@@ -34,13 +41,6 @@ class BooksSpider(scrapy.Spider):
             logging.getLogger('scrapy.crawler').error('Out of pages')
             self.crawler.stop()
 
-
-    # def book_parse(self, response: scrapy.http.Response):
-        # current_url = response.url
-        # ...
-        # try:
-            # yield scrapy.Request(url=next_url, callback=self.book_parse)
-        # except TypeError:
-            # logging.getLogger('scrapy.crawler').info('Out of books')
-            # pass
-
+    def book_parse(self, response: scrapy.http.Response):
+        book_url = response.url
+        print(f'Book url: {book_url}')
