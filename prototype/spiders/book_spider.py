@@ -1,8 +1,8 @@
 import scrapy
 
 
-class BooksSpider(scrapy.Spider):
-    name: str = "quotes"
+class BookSpider(scrapy.Spider):
+    name: str = "books"
 
     def start_requests(self):
         urls: list[str] = [

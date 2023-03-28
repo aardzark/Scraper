@@ -5,4 +5,4 @@
 __title__ = 'Spiders'
 __version__ = '1.0.0'
 
-from .books_spider import BooksSpider
+from .book_spider import BookSpider
