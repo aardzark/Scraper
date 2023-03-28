@@ -1,6 +1,5 @@
 import scrapy
-import logging
-import asyncio
+
 
 class BooksSpider(scrapy.Spider):
     name: str = "quotes"
@@ -38,8 +37,10 @@ class BooksSpider(scrapy.Spider):
             next_url = catalogue_path + next_page
             yield scrapy.Request(url=next_url, callback=self.page_parse)
         except TypeError:
-            logging.getLogger('scrapy.crawler').error('Out of pages')
-            self.crawler.stop()
+            raise scrapy.exceptions.CloseSpider('OUT OF BOOKS')
+
+    def closed(self, reason):
+        self.logger.critical('Spider closed: %s', reason)
 
     def book_parse(self, response: scrapy.http.Response):
         book_url = response.url
