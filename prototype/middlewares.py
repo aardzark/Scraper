@@ -24,7 +24,7 @@ class TutorialSpiderMiddleware:
     def process_spider_input(self, response, spider):
         # Called for each response that goes through the spider
         # middleware and into the spider.
-
+        # test
         if response.meta.get('depth') is None or response.meta['parse_method'] == 'page_parse':
             url = response.url
             catalogue_path = url[: url.rfind('/') + 1]
