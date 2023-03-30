@@ -17,6 +17,7 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
+SPIDER_MIDDLEWARES = {"prototype.middlewares.TutorialSpiderMiddleware" : 500}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "prototype (+http://www.yourdomain.com)"
