@@ -24,9 +24,18 @@ class TutorialSpiderMiddleware:
     def process_spider_input(self, response, spider):
         # Called for each response that goes through the spider
         # middleware and into the spider.
-        current_url = response.url
+
+        if response.meta.get('depth') is None or response.meta['parse_method'] == 'page_parse':
+            url = response.url
+            catalogue_path = url[: url.rfind('/') + 1]
+            response.meta['catalogue_path'] = catalogue_path
+            books_remaining = len(response.xpath('//*[@id="default"]/div/div/div/div/section/div[2]/ol/li'))
+            response.meta['books_remaining'] = books_remaining
+
         # Should return None or raise an exception.
         return None
+
+    #def process_spider_input2(self, response, spider):
 
     def process_spider_output(self, response, result, spider):
         # Called with the results returned from the Spider, after
