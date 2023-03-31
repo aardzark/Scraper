@@ -31,6 +31,13 @@ class TutorialSpiderMiddleware:
             response.meta['catalogue_path'] = catalogue_path
             books_remaining = len(response.xpath('//*[@id="default"]/div/div/div/div/section/div[2]/ol/li'))
             response.meta['books_remaining'] = books_remaining
+            next_page = response.xpath('''
+                                        //*[@id="default"]/div/div/div/div/
+                                        section/div[2]/div/ul/li[@class="next"]/a/@href
+                                        ''').get()
+            next_page_url = catalogue_path + next_page
+            response.meta['next_page_url'] = next_page_url
+
 
         # Should return None or raise an exception.
         return None

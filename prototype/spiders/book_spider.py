@@ -23,16 +23,11 @@ class BookSpider(scrapy.Spider):
 
             book_url = response.meta['catalogue_path'] + book
 
-            yield scrapy.Request(url=book_url, callback=self.book_parse, meta={'parse_method': 'book_parse'})
-
-        next_page = response.xpath('''
-                                    //*[@id="default"]/div/div/div/div/
-                                    section/div[2]/div/ul/li[@class="next"]/a/@href
-                                    ''').get()
+            yield scrapy.Request(url=book_url, callback=self.book_parse, meta={'parse_method': 'book_parse',
+                                                                               'page_response': response})
 
         try:
-            next_url = response.meta['catalogue_path'] + next_page
-            yield scrapy.Request(url=next_url, callback=self.page_parse, meta={'parse_method': 'page_parse'})
+            yield scrapy.Request(url=response.meta.get('next_page_url'), callback=self.page_parse, meta={'parse_method': 'page_parse'})
         except TypeError:
             raise scrapy.exceptions.CloseSpider('OUT OF BOOKS')
 
@@ -40,6 +35,5 @@ class BookSpider(scrapy.Spider):
         self.logger.critical('Spider closed: %s', reason)
 
     def book_parse(self, response: scrapy.http.Response):
-        response.meta['process_spider_input'] = 'book_parse'
         book_url = response.url
         print(f'Book url: {book_url}')
