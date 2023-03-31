@@ -15,7 +15,7 @@ class BookSpider(scrapy.Spider):
     def page_parse(self, response: scrapy.http.Response):
         print(f'Page url: {response.url}')
 
-        for i in range(response.meta['books_remaining']):
+        for i in range(response.meta['books_on_page']):
             book = response.xpath(f'''
                                     /html/body/div/div/div/div/section/
                                     div[2]/ol/li[{i + 1}]/article/h3/a/@href

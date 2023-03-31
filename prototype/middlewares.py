@@ -29,14 +29,17 @@ class TutorialSpiderMiddleware:
             url = response.url
             catalogue_path = url[: url.rfind('/') + 1]
             response.meta['catalogue_path'] = catalogue_path
-            books_remaining = len(response.xpath('//*[@id="default"]/div/div/div/div/section/div[2]/ol/li'))
-            response.meta['books_remaining'] = books_remaining
+            books_on_page = len(response.xpath('//*[@id="default"]/div/div/div/div/section/div[2]/ol/li'))
+            response.meta['books_on_page'] = books_on_page
             next_page = response.xpath('''
                                         //*[@id="default"]/div/div/div/div/
                                         section/div[2]/div/ul/li[@class="next"]/a/@href
                                         ''').get()
             next_page_url = catalogue_path + next_page
             response.meta['next_page_url'] = next_page_url
+        elif response.meta.get('parse_method') == 'book_parse':
+
+            return None
 
 
         # Should return None or raise an exception.
