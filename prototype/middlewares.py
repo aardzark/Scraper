@@ -37,10 +37,18 @@ class TutorialSpiderMiddleware:
                                         ''').get()
             next_page_url = catalogue_path + next_page
             response.meta['next_page_url'] = next_page_url
+            response.meta['book_index'] = 1
+            books = []
+            for i in range(books_on_page):
+                book = response.xpath(f'''
+                                        /html/body/div/div/div/div/section/
+                                        div[2]/ol/li[{i + 1}]/article/h3/a/@href
+                                        ''').get()
+                books.append(book)
+            response.meta['books'] = books
+
         elif response.meta.get('parse_method') == 'book_parse':
-
             return None
-
 
         # Should return None or raise an exception.
         return None
