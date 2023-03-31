@@ -1,1 +1,0 @@
-![Scraper](./icons/scraper.png)
