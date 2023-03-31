@@ -15,27 +15,33 @@ class BookSpider(scrapy.Spider):
     def page_parse(self, response: scrapy.http.Response):
         print(f'Page url: {response.url}')
 
-        for i in range(1, response.meta['books_on_page']):
-            book_url = response.meta['catalogue_path'] + response.meta['books'][i]
-            yield scrapy.Request(url=book_url, callback=self.book_parse, meta={'parse_method': 'book_parse',
-                                                                               'page_response': response})
-
         try:
-            yield scrapy.Request(url=response.meta.get('next_page_url'), callback=self.page_parse,
+            yield scrapy.Request(url=response.meta.get('book urls')[0],
+                                 callback=self.book_parse,
+                                 meta={'parse_method': 'book_parse',
+                                       'book urls': response.meta.get('book urls')})
+
+            yield scrapy.Request(url=response.meta.get('next_page_url'),
+                                 callback=self.page_parse,
                                  meta={'parse_method': 'page_parse'})
+
         except TypeError:
-            raise scrapy.exceptions.CloseSpider('OUT OF BOOKS')
+            print("\x1b[31mOUT OF BOOKS\x1b[0m")
+            pass
+
 
     def closed(self, reason):
         self.logger.critical('Spider closed: %s', reason)
 
     def book_parse(self, response: scrapy.http.Response):
-        # book = response.meta['page_response']['meta']['book_index'] =
-        for i in range(1, response.meta.get('page_response').meta.get('books_on_page')):
-            response.meta['page_response'].meta['book_index'] = i + 1
-            book_url = response.meta['page_response'].meta['catalogue_path'] \
-                       + response.meta['page_response'].meta['books'][i]
-            #print(book_url)
-            #print(response.meta['page_response'].meta['book_index'])
-        book_url = response.url
-        print(f'Book url: {book_url}')
+        print(f'Book url: {response.url}')
+        book_urls = response.meta.get('book urls')
+
+        if book_urls.index(response.url) + 1 < len(book_urls):
+            yield scrapy.Request(
+                url=book_urls[book_urls.index(response.url) + 1],
+                callback=self.book_parse,
+                meta={'parse_method': 'book_parse',
+                      'book urls': response.meta.get('book urls')})
+        else:
+            return None

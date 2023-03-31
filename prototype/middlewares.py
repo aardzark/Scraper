@@ -4,6 +4,7 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+import scrapy
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
@@ -22,9 +23,6 @@ class TutorialSpiderMiddleware:
         return s
 
     def process_spider_input(self, response, spider):
-        # Called for each response that goes through the spider
-        # middleware and into the spider.
-        # test
         if response.meta.get('depth') is None or response.meta['parse_method'] == 'page_parse':
             url = response.url
             catalogue_path = url[: url.rfind('/') + 1]
@@ -35,25 +33,33 @@ class TutorialSpiderMiddleware:
                                         //*[@id="default"]/div/div/div/div/
                                         section/div[2]/div/ul/li[@class="next"]/a/@href
                                         ''').get()
-            next_page_url = catalogue_path + next_page
+            try:
+                next_page_url = catalogue_path + next_page
+            except TypeError:
+                print("\x1b[31mOUT OF BOOKS\x1b[0m")
+                return None
+
             response.meta['next_page_url'] = next_page_url
             response.meta['book_index'] = 1
             books = []
+            book_urls = []
             for i in range(books_on_page):
                 book = response.xpath(f'''
                                         /html/body/div/div/div/div/section/
                                         div[2]/ol/li[{i + 1}]/article/h3/a/@href
                                         ''').get()
                 books.append(book)
+                book_url = catalogue_path + book
+                book_urls.append(book_url)
+
             response.meta['books'] = books
+            response.meta['book urls'] = book_urls
 
         elif response.meta.get('parse_method') == 'book_parse':
             return None
 
         # Should return None or raise an exception.
         return None
-
-    #def process_spider_input2(self, response, spider):
 
     def process_spider_output(self, response, result, spider):
         # Called with the results returned from the Spider, after
