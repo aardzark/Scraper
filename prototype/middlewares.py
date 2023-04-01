@@ -23,37 +23,50 @@ class TutorialSpiderMiddleware:
         return s
 
     def process_spider_input(self, response: Response, spider: Spider) -> None:
+        # Log the method name and response url to assist in visualizing Scrapy's logic flow
+        spider.logger.debug(f'Inside process_spider_input for response: {response.url}')
+
+        # Check for no depth, e.g. start request, and if page_parse is the callback method for the response
         if response.meta.get('depth') is None or response.meta['parse_method'] == 'page_parse':
-            url = response.url
-            catalogue_path = url[: url.rfind('/') + 1]
-            response.meta['catalogue_path'] = catalogue_path
-            books_on_page = len(response.xpath('//*[@id="default"]/div/div/div/div/section/div[2]/ol/li'))
-            response.meta['books_on_page'] = books_on_page
+            # Extract the URL of the catalogue path
+            url_parts = response.url.rpartition('/') # Move this, redundant duplicate calls
+            catalogue_path = url_parts[0] + '/' # Move this, redundant duplicate calls
+
+            # Extract the next page location
             next_page = response.xpath('''
                                         //*[@id="default"]/div/div/div/div/
                                         section/div[2]/div/ul/li[@class="next"]/a/@href
                                         ''').get()
+
+            # Check if we have reached the end of pagination and
+            # join the catalogue path and next page location if we haven't
             try:
                 next_page_url = catalogue_path + next_page
             except TypeError:
                 print("\x1b[31mOUT OF BOOKS\x1b[0m")
                 return None
 
-            response.meta['next_page_url'] = next_page_url
-            response.meta['book_index'] = 1
-            books = []
+            # Return the count of book listings on the current page
+            book_count = len(response.xpath('//*[@id="default"]/div/div/div/div/section/div[2]/ol/li'))
+
             book_urls = []
-            for i in range(books_on_page):
+            for i in range(book_count):
+                # Extract the location of the specified book on the current page
                 book = response.xpath(f'''
                                         /html/body/div/div/div/div/section/
                                         div[2]/ol/li[{i + 1}]/article/h3/a/@href
                                         ''').get()
-                books.append(book)
+                # Join the catalogue path and book location
                 book_url = catalogue_path + book
                 book_urls.append(book_url)
 
-            response.meta['books'] = books
-            response.meta['book urls'] = book_urls
+            # Update the response metadata
+            response.meta.update({
+                'catalogue_path': catalogue_path,
+                'next_page_url': next_page_url,
+                'book_index': 1,
+                'book urls': book_urls
+            })
 
         elif response.meta.get('parse_method') == 'book_parse':
             return None
@@ -62,9 +75,11 @@ class TutorialSpiderMiddleware:
         return None
 
     def process_spider_output(self, response, result, spider):
+        # Log the method name and response url to assist in visualizing Scrapy's logic flow
+        spider.logger.debug(f'Inside process_spider_output for response: {response.url}')
+
         # Called with the results returned from the Spider, after
         # it has processed the response.
-
         # Must return an iterable of Request, or item objects.
         for i in result:
             yield i
