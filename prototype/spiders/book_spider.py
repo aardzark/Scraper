@@ -1,18 +1,19 @@
 import scrapy
+from typing import List, Dict
 
 
 class BookSpider(scrapy.Spider):
     name: str = "books"
 
-    def start_requests(self):
-        urls: list[str] = [
+    def start_requests(self) -> List[scrapy.Request]:
+        urls: List[str] = [
             'http://books.toscrape.com/catalogue/page-1.html',
         ]
 
         for url in urls:
             yield scrapy.Request(url=url, callback=self.page_parse)
 
-    def page_parse(self, response: scrapy.http.Response):
+    def page_parse(self, response: scrapy.http.Response) -> None:
         print(f'Page url: {response.url}')
 
         try:
@@ -29,13 +30,12 @@ class BookSpider(scrapy.Spider):
             print("\x1b[31mOUT OF BOOKS\x1b[0m")
             pass
 
-
-    def closed(self, reason):
+    def closed(self, reason: str) -> None:
         self.logger.critical('Spider closed: %s', reason)
 
-    def book_parse(self, response: scrapy.http.Response):
+    def book_parse(self, response: scrapy.http.Response) -> None:
         print(f'Book url: {response.url}')
-        book_urls = response.meta.get('book urls')
+        book_urls: List[str] = response.meta.get('book urls')
 
         if book_urls.index(response.url) + 1 < len(book_urls):
             yield scrapy.Request(

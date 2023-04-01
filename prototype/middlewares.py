@@ -3,9 +3,9 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-from scrapy import signals
-import scrapy
 
+from scrapy import signals, Spider
+from scrapy.http import Response
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
 
@@ -22,7 +22,7 @@ class TutorialSpiderMiddleware:
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
         return s
 
-    def process_spider_input(self, response, spider):
+    def process_spider_input(self, response: Response, spider: Spider) -> None:
         if response.meta.get('depth') is None or response.meta['parse_method'] == 'page_parse':
             url = response.url
             catalogue_path = url[: url.rfind('/') + 1]
