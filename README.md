@@ -66,5 +66,5 @@ Run the script.
 ## Contributors
 
 <a href = "https://github.com/aardzark/Scraper/graphs/contributors">
-  <img src = "https://contrib.rocks/image?repo = Aardzark/Scraper"/>
+  <img src="https://github.com/aardzark.png?size=50">
 </a>
