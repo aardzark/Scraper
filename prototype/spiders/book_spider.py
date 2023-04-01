@@ -21,8 +21,10 @@ class BookSpider(scrapy.Spider):
         yield scrapy.Request(url=response.meta.get('book urls')[0],
                              callback=self.book_parse,
                              meta={'parse_method': 'book_parse',
-                                   'book urls': response.meta.get('book urls')}) # Check if this metadata persists
+                                   'book urls': response.meta.get('book urls')})  # @TODO Handle this metadata better.
 
+        # If next_page_url is None we have reached the end of pagination
+        # and this will signal the spider to close naturally
         if response.meta.get('next_page_url') is None:
             return None
 
@@ -30,8 +32,7 @@ class BookSpider(scrapy.Spider):
         # and pass the parse method as metadata
         yield scrapy.Request(url=response.meta.get('next_page_url'),
                              callback=self.page_parse,
-                             meta={'parse_method': 'page_parse'}) # Add this metadata to start request as well
-
+                             meta={'parse_method': 'page_parse'})
 
     def closed(self, reason: str) -> None:
         self.logger.critical('Spider closed: %s', reason)
@@ -43,12 +44,12 @@ class BookSpider(scrapy.Spider):
         book_urls: List[str] = response.meta.get('book urls')
 
         # Check if the current url is within range of the list length of book urls
-        if book_urls.index(response.url) + 1 < len(book_urls): # Check if this can instead be a try/except block
+        if book_urls.index(response.url) + 1 < len(book_urls): # @TODO Handle this similarly to logic in page_parse
             # Make recursive requests to page_parse and set the parse_method
             yield scrapy.Request(
                 url=book_urls[book_urls.index(response.url) + 1],
                 callback=self.book_parse,
                 meta={'parse_method': 'book_parse',
-                      'book urls': response.meta.get('book urls')})
+                      'book urls': response.meta.get('book urls')}) # @TODO Handle this metadata better.
         else:
             return None

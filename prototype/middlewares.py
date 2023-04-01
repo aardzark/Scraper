@@ -36,6 +36,9 @@ class TutorialSpiderMiddleware:
                                         section/div[2]/div/ul/li[@class="next"]/a/@href
                                         ''').get()
 
+            # Check if we have reached the end of pagination and
+            # join the catalogue path and next page location, and if we haven't,
+            # set the next_page_url to None to signal to the spider to close
             next_page_url = catalogue_path + next_page if next_page else None
 
             # Return the count of book listings on the current page
