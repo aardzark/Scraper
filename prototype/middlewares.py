@@ -2,8 +2,7 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-
-
+import scrapy.exceptions
 from scrapy import signals, Spider
 from scrapy.http import Response
 # useful for handling different item types with a single interface
@@ -29,22 +28,15 @@ class TutorialSpiderMiddleware:
         # Check for no depth, e.g. start request, and if page_parse is the callback method for the response
         if response.meta.get('depth') is None or response.meta['parse_method'] == 'page_parse':
             # Extract the URL of the catalogue path
-            url_parts = response.url.rpartition('/') # Move this, redundant duplicate calls
-            catalogue_path = url_parts[0] + '/' # Move this, redundant duplicate calls
-
+            url_parts = response.url.rpartition('/')
+            catalogue_path = url_parts[0] + '/'
             # Extract the next page location
             next_page = response.xpath('''
                                         //*[@id="default"]/div/div/div/div/
                                         section/div[2]/div/ul/li[@class="next"]/a/@href
                                         ''').get()
 
-            # Check if we have reached the end of pagination and
-            # join the catalogue path and next page location if we haven't
-            try:
-                next_page_url = catalogue_path + next_page
-            except TypeError:
-                print("\x1b[31mOUT OF BOOKS\x1b[0m")
-                return None
+            next_page_url = catalogue_path + next_page if next_page else None
 
             # Return the count of book listings on the current page
             book_count = len(response.xpath('//*[@id="default"]/div/div/div/div/section/div[2]/ol/li'))
@@ -62,14 +54,13 @@ class TutorialSpiderMiddleware:
 
             # Update the response metadata
             response.meta.update({
-                'catalogue_path': catalogue_path,
                 'next_page_url': next_page_url,
                 'book_index': 1,
                 'book urls': book_urls
             })
 
         elif response.meta.get('parse_method') == 'book_parse':
-            return None
+            pass
 
         # Should return None or raise an exception.
         return None

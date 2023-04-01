@@ -17,24 +17,21 @@ class BookSpider(scrapy.Spider):
         # Log the method name and response url to assist in visualizing Scrapy's logic flow
         self.logger.debug(f'Inside page_parse for response: {response.url}')
 
-        # Try to make requests if response is not equal to None
-        try:
-            # Make recursive requests to page_parse and set the parse_method
-            # and pass the parse method as metadata
-            yield scrapy.Request(url=response.meta.get('next_page_url'),
-                                 callback=self.page_parse,
-                                 meta={'parse_method': 'page_parse'}) # Add this metadata to start request as well
+        # Make an initial request to book_parse and pass the book urls as metadata
+        yield scrapy.Request(url=response.meta.get('book urls')[0],
+                             callback=self.book_parse,
+                             meta={'parse_method': 'book_parse',
+                                   'book urls': response.meta.get('book urls')}) # Check if this metadata persists
 
-            # Make an initial request to book_parse and pass the book urls as metadata
-            yield scrapy.Request(url=response.meta.get('book urls')[0],
-                                 callback=self.book_parse,
-                                 meta={'parse_method': 'book_parse',
-                                       'book urls': response.meta.get('book urls')}) # Check if this metadata persists
+        if response.meta.get('next_page_url') is None:
+            return None
 
-        # If we are out of requests have Scrapy close the spider
-        except TypeError:
-            print("\x1b[31mOUT OF BOOKS\x1b[0m")
-            pass # check if we should change this to return
+        # Make recursive requests to page_parse and set the parse_method
+        # and pass the parse method as metadata
+        yield scrapy.Request(url=response.meta.get('next_page_url'),
+                             callback=self.page_parse,
+                             meta={'parse_method': 'page_parse'}) # Add this metadata to start request as well
+
 
     def closed(self, reason: str) -> None:
         self.logger.critical('Spider closed: %s', reason)
