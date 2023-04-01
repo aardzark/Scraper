@@ -57,7 +57,7 @@ Clone the repository.
 
 `git clone https://github.com/aardzark/Scraper.git`
 
-Navigate to `Scraper/prototype/`
+Navigate to `Scraper/prototype/`.
 
 Run the script.
 
