@@ -2,6 +2,8 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+from typing import List
+
 import scrapy.exceptions
 from scrapy import signals, Spider
 from scrapy.http import Response
@@ -71,6 +73,20 @@ class TutorialSpiderMiddleware:
     def process_spider_output(self, response, result, spider):
         # Log the method name and response url to assist in visualizing Scrapy's logic flow
         spider.logger.debug(f'Inside process_spider_output for response: {response.url}')
+
+        # Check if book_parse is the callback method for the response
+        if response.meta.get('parse_method') == 'book_parse':
+            book_urls: List[str] = response.meta.get('book urls')
+            # Check if the current url is within range of the list length of book urls
+            if book_urls.index(response.url) + 1 < len(book_urls):
+                # Assign the next book url in the list
+                next_book_url = book_urls[book_urls.index(response.url) + 1]
+            else:
+                next_book_url = None
+
+            # Update the response metadata
+            response.meta.update({'next_book_url': next_book_url,
+                                  'book urls': book_urls})
 
         # Called with the results returned from the Spider, after
         # it has processed the response.
