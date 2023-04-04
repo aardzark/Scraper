@@ -6,6 +6,7 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import os
 
 BOT_NAME = "prototype"
 SPIDER_MODULES = ["prototype.spiders"]
@@ -17,10 +18,20 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
-SPIDER_MIDDLEWARES = {"prototype.middlewares.TutorialSpiderMiddleware" : 500}
-ITEM_PIPELINES = {
-    'prototype.pipelines.ItemPipeline': 300,
+
+POSTGRESQL_HOST = os.getenv('POSTGRESQL_HOST')
+POSTGRESQL_PORT = os.getenv('POSTGRESQL_PORT')
+POSTGRESQL_USER = os.getenv('POSTGRESQL_USER')
+POSTGRESQL_PASSWORD = os.getenv('POSTGRESQL_PASSWORD')
+POSTGRESQL_DATABASE = os.getenv('POSTGRESQL_DATABASE')
+
+SPIDER_MIDDLEWARES = {
+    "prototype.middlewares.TutorialSpiderMiddleware": 100
 }
+ITEM_PIPELINES = {
+    'prototype.pipelines.PostgreSQLPipeline': 100
+}
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "prototype (+http://www.yourdomain.com)"
 
