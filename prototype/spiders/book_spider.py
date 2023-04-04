@@ -35,6 +35,7 @@ class BookSpider(Spider):
         book_item = BookItem()
 
         book_item['title'] = response.css('.product_page h1::text').get()
+        # @TODO Fix description format
         book_item['description'] = response.css('#product_description + p::text').get()
         book_item['upc'] = response.css('th:contains("UPC") + td::text').get()
         book_item['price'] = response.css('th:contains("Price (excl. tax)") + td::text').get().split("£")[1]
