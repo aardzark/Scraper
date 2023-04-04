@@ -2,6 +2,8 @@ import scrapy
 from typing import List, Dict, Generator
 from scrapy import Request, Spider
 from scrapy.http import Response
+from prototype.items import BookItem
+
 
 class BookSpider(Spider):
     name: str = "books"
@@ -29,3 +31,15 @@ class BookSpider(Spider):
     def parse(self, response: Response) -> None:
         # Log the method name and response url to assist in visualizing Scrapy's logic flow
         self.log(f'Inside parse for response: {response.url}')
+
+        book_item = BookItem()
+
+        book_item['title'] = response.css('.product_page h1::text').get()
+        book_item['description'] = response.css('#product_description + p::text').get()
+        book_item['upc'] = response.css('th:contains("UPC") + td::text').get()
+        book_item['price'] = response.css('th:contains("Price (excl. tax)") + td::text').get().split("£")[1]
+        book_item['tax'] = response.css('th:contains("Tax") + td::text').get().split("£")[1]
+        book_item['stock'] = response.css('th:contains("Availability") + td::text').get().split("(")[1].split(" ")[0]
+        book_item['number_of_reviews'] = response.css('th:contains("Number of reviews") + td::text').get()
+
+        yield book_item
