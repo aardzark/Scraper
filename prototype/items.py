@@ -4,9 +4,15 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 import scrapy
+from scrapy import Field, Item
 
 
-class TutorialItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
+class BookItem(Item):
+    title: Field = Field()
+    description: Field = Field()
+    upc: Field = Field()
+    price: Field = Field()
+    tax: Field = Field()
+    stock: Field = Field()
+    number_of_reviews: Field = Field()
     pass
