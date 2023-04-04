@@ -2,8 +2,9 @@
 
 ## Description
 
-This is a web scraper model for a larger project. It currently scrapes the pages and books on https://books.toscrape.com.
-The urls for the pages and the books are printed to the console.
+This is a web scraper model for a larger project. The scraper has been designed using best practices for Scrapy and 
+follows its recommended design patterns. It scrapes the books from https://books.toscrape.com.
+The book records are posted to a PostgreSQL database.
 
 ## Getting Started
 
