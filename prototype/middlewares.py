@@ -34,7 +34,7 @@ class TutorialSpiderMiddleware:
 
         next_page = catalogue_path + next_page if next_page else None
         response.meta['next_page'] = next_page
-        books = [catalogue_path + book_loc for book_loc in response.css('.product_pod a::attr(href)').getall()]
+        books: List[str] = [catalogue_path + book_loc for book_loc in response.css('.product_pod a::attr(href)').getall()]
         response.meta['books'] = books
 
         # Should return None or raise an exception.
