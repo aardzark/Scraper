@@ -11,14 +11,16 @@ BOT_NAME = "prototype"
 SPIDER_MODULES = ["prototype.spiders"]
 NEWSPIDER_MODULE = "prototype.spiders"
 LOG_ENABLED = True
-LOG_LEVEL = 'ERROR'
+LOG_LEVEL = 'DEBUG'
 # Set settings whose default value is deprecated to a future-proof value
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 SPIDER_MIDDLEWARES = {"prototype.middlewares.TutorialSpiderMiddleware" : 500}
-
+ITEM_PIPELINES = {
+    'prototype.pipelines.ItemPipeline': 300,
+}
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "prototype (+http://www.yourdomain.com)"
 
