@@ -37,8 +37,8 @@ class TutorialSpiderMiddleware:
 
         next_page_url = catalogue_path + next_page if next_page else None
         response.meta['next_page_url'] = next_page_url
-        books = [catalogue_path + book_url for book_url in response.css('.product_pod a::attr(href)').getall()]
-
+        books = [catalogue_path + book_loc for book_loc in response.css('.product_pod a::attr(href)').getall()]
+        response.meta['books'] = books
 
         '''
         # Check for no depth, e.g. start request, and if page_parse is the callback method for the response
