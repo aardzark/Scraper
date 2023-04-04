@@ -8,6 +8,7 @@ import scrapy.exceptions
 from scrapy import signals, Spider, Request
 from scrapy.http import Response
 from scrapy.utils.url import urlparse
+from urllib.parse import urlsplit, ParseResult
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
 
@@ -28,13 +29,24 @@ class TutorialSpiderMiddleware:
         # Log the method name and response url to assist in visualizing Scrapy's logic flow
         spider.logger.debug(f'Inside process_spider_input for response: {response.url}')
 
-        url_parts: List[str] = response.url.rpartition('/')
-        catalogue_path: str = url_parts[0] + '/'
+        # Parse the response url
+        url_parts: List[ParseResult] = urlparse(response.url)
+        base_url: str = url_parts.scheme + '://' + url_parts.netloc + '/'
+        url_paths: List[str] = url_parts.path.split('/')
+
+        # Obtain the location of the next page
         next_page: str = response.css('.next a::attr(href)').get()
 
-        next_page = catalogue_path + next_page if next_page else None
+        # Build the url of the next page
+        # None is the stop condition for the spider
+        next_page = base_url + url_paths[1] + '/' + next_page if next_page else None
+
+        # Obtain the location of each book
+        # Perform list comprehension to build the urls for each book
+        books: List[str] = [base_url + url_paths[1] + '/' + book_loc for book_loc in response.css('.product_pod a::attr(href)').getall()]
+
+        # Update the metadata for the response
         response.meta['next_page'] = next_page
-        books: List[str] = [catalogue_path + book_loc for book_loc in response.css('.product_pod a::attr(href)').getall()]
         response.meta['books'] = books
 
         # Should return None or raise an exception.

@@ -17,9 +17,13 @@ class BookSpider(Spider):
     def generate_requests(self, response: Response) -> Generator[Request, None, None]:
         next_page: str = response.meta.get('next_page')
 
+        # Generate requests for each book url
+        # Parse each book
         for book in response.meta.get('books'):
             yield Request(url=book, callback=self.parse)
 
+        # Generate a request for the next page
+        # If None is yielded, the spider will receive a signal that scraping is finished and it will close
         yield Request(url=next_page, callback=self.generate_requests) if next_page else None
 
     def parse(self, response: Response) -> None:
