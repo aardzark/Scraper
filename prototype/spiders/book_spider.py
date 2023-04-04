@@ -14,13 +14,13 @@ class BookSpider(Spider):
         for url in urls:
             yield Request(url=url, callback=self.generate_requests)
 
-    def generate_requests(self, response: Response) -> Generator[Request, Request, None]:
-        next_page_url: str = response.meta.get('next_page_url')
+    def generate_requests(self, response: Response) -> Generator[Request, None, None]:
+        next_page: str = response.meta.get('next_page')
 
         for book in response.meta.get('books'):
             yield Request(url=book, callback=self.parse)
 
-        yield Request(url=next_page_url, callback=self.generate_requests) if next_page_url else None
+        yield Request(url=next_page, callback=self.generate_requests) if next_page else None
 
     def parse(self, response: Response) -> None:
         # Log the method name and response url to assist in visualizing Scrapy's logic flow
