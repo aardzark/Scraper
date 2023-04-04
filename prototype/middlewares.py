@@ -30,13 +30,10 @@ class TutorialSpiderMiddleware:
 
         url_parts: List[str] = response.url.rpartition('/')
         catalogue_path: str = url_parts[0] + '/'
-        next_page: str = response.xpath('''
-                                            //*[@id="default"]/div/div/div/div/
-                                            section/div[2]/div/ul/li[@class="next"]/a/@href
-                                            ''').get()
+        next_page: str = response.css('.next a::attr(href)').get()
 
-        next_page_url = catalogue_path + next_page if next_page else None
-        response.meta['next_page_url'] = next_page_url
+        next_page = catalogue_path + next_page if next_page else None
+        response.meta['next_page'] = next_page
         books = [catalogue_path + book_loc for book_loc in response.css('.product_pod a::attr(href)').getall()]
         response.meta['books'] = books
 
