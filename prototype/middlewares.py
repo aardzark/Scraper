@@ -7,6 +7,7 @@ from typing import List, Iterable
 import scrapy.exceptions
 from scrapy import signals, Spider, Request
 from scrapy.http import Response
+from scrapy.utils.url import urlparse
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
 
@@ -36,7 +37,7 @@ class TutorialSpiderMiddleware:
 
         next_page_url = catalogue_path + next_page if next_page else None
         response.meta['next_page_url'] = next_page_url
-        #books = response.css('.product_pod a::attr(href)').getall()
+        books = [catalogue_path + book_url for book_url in response.css('.product_pod a::attr(href)').getall()]
 
 
         '''
