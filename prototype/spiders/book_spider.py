@@ -3,7 +3,8 @@ from typing import List, Dict, Generator
 from scrapy import Request, Spider
 from scrapy.http import Response
 from prototype.items import BookItem
-
+import chardet
+from unidecode import unidecode
 
 class BookSpider(Spider):
     name: str = "books"
@@ -35,8 +36,8 @@ class BookSpider(Spider):
         book_item = BookItem()
 
         book_item['title'] = response.css('.product_page h1::text').get()
-        # @TODO Fix description format
-        book_item['description'] = response.css('#product_description + p::text').get()
+        # Use unidecode to convert any non-ASCII characters to their closest ASCII equivalent
+        book_item['description'] = unidecode(response.css('#product_description + p::text').get())
         book_item['upc'] = response.css('th:contains("UPC") + td::text').get()
         book_item['price'] = response.css('th:contains("Price (excl. tax)") + td::text').get().split("£")[1]
         book_item['tax'] = response.css('th:contains("Tax") + td::text').get().split("£")[1]
