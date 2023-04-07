@@ -8,6 +8,16 @@ The book records are posted to a PostgreSQL database.
 
 ## Getting Started
 
+### Installing PostgreSQL
+
+To install PostgreSQL on Windows:
+
+Use the [interactive installer](https://www.postgresql.org/download/windows/).
+
+To install PostgreSQL on Linux:
+
+`sudo apt-get install postgresql`
+
 ### Installing Python3
 
 Check if Python3 is installed on your operating system.
@@ -42,7 +52,7 @@ To install pip on Windows:
 
 `python3 get-pip.py`
 
-### Installing Scrapy
+### Installing Dependencies
 
 Check if scrapy is installed.
 
@@ -51,6 +61,8 @@ Check if scrapy is installed.
 Install scrapy if it's not installed.
 
 `pip install scrapy`
+
+Check if psycopg2 is installed.
 
 ### Running the Script
 
