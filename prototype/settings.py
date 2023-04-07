@@ -26,10 +26,10 @@ POSTGRESQL_PASSWORD = os.getenv('POSTGRESQL_PASSWORD')
 POSTGRESQL_DATABASE = os.getenv('POSTGRESQL_DATABASE')
 
 SPIDER_MIDDLEWARES = {
-    "prototype.middlewares.TutorialSpiderMiddleware": 100
+    "prototype.spiders.middlewares.middlewares.TutorialSpiderMiddleware": 100
 }
 ITEM_PIPELINES = {
-    'prototype.pipelines.PostgreSQLPipeline': 100
+    'prototype.spiders.pipelines.pipelines.PostgreSQLPipeline': 100
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -58,7 +58,7 @@ ITEM_PIPELINES = {
 #    "Accept-Language": "en",
 #}
 
-# Enable or disable spider middlewares
+# Enable or disable spiders middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
 #    "prototype.middlewares.TutorialSpiderMiddleware": 543,

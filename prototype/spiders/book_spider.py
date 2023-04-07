@@ -1,8 +1,7 @@
-from typing import List, Dict, Generator
+from typing import List, Generator
 from scrapy import Request, Spider
 from scrapy.http import Response
-from prototype.items import BookItem
-
+from .items.items import BookItem
 
 class BookSpider(Spider):
     name: str = "books"
@@ -24,7 +23,7 @@ class BookSpider(Spider):
             yield Request(url=book, callback=self.parse)
 
         # Generate a request for the next page
-        # If None is yielded, the spider will receive a signal that scraping is finished and it will close
+        # If None is yielded, the spiders will receive a signal that scraping is finished and it will close
         yield Request(url=next_page, callback=self.generate_requests) if next_page else None
 
     def parse(self, response: Response) -> None:
