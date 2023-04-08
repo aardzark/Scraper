@@ -1,11 +1,3 @@
-# Scrapy settings for prototype project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     https://docs.scrapy.org/en/latest/topics/settings.html
-#     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import os
 
 BOT_NAME = "prototype"
@@ -28,6 +20,7 @@ POSTGRESQL_DATABASE = os.getenv('POSTGRESQL_DATABASE')
 SPIDER_MIDDLEWARES = {
     "prototype.spiders.middlewares.middlewares.TutorialSpiderMiddleware": 100
 }
+
 ITEM_PIPELINES = {
     'prototype.spiders.pipelines.pipelines.PostgreSQLPipeline': 100
 }
