@@ -54,27 +54,14 @@ To install pip on Windows:
 
 ### Installing Dependencies
 
-Check if scrapy is installed.
-
-`pip show scrapy`
-
-Install scrapy if it's not installed.
-
-`pip install scrapy`
-
-Check if psycopg2 is installed.
+`pip install -r app/book_scraper/requirements.txt`
 
 ### Running the Script
 
-Clone the repository.
 
-`git clone https://github.com/aardzark/Scraper.git`
+Modify `app/book_scraper/.env` to suit your settings.
 
-Navigate to `Scraper/prototype/`.
-
-Run the script.
-
-`python3 main.py`
+`python3 main.py prototype/app/book_scraper/main.py`
 
 ## Contributors
 

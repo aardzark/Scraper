@@ -1,8 +1,8 @@
 import os
 
-BOT_NAME = "prototype"
-SPIDER_MODULES = ["prototype.spiders"]
-NEWSPIDER_MODULE = "prototype.spiders"
+BOT_NAME = "book_scraper"
+SPIDER_MODULES = ["book_scraper.spiders"]
+NEWSPIDER_MODULE = "book_scraper.spiders"
 LOG_ENABLED = True
 LOG_LEVEL = 'DEBUG'
 # Set settings whose default value is deprecated to a future-proof value
@@ -18,15 +18,15 @@ POSTGRESQL_PASSWORD = os.getenv('POSTGRESQL_PASSWORD')
 POSTGRESQL_DATABASE = os.getenv('POSTGRESQL_DATABASE')
 
 SPIDER_MIDDLEWARES = {
-    "prototype.spiders.middlewares.middlewares.TutorialSpiderMiddleware": 100
+    "book_scraper.spiders.middlewares.middlewares.TutorialSpiderMiddleware": 100
 }
 
 ITEM_PIPELINES = {
-    'prototype.spiders.pipelines.pipelines.PostgreSQLPipeline': 100
+    'book_scraper.spiders.pipelines.pipelines.PostgreSQLPipeline': 100
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "prototype (+http://www.yourdomain.com)"
+#USER_AGENT = "book_scraper (+http://www.yourdomain.com)"
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -54,13 +54,13 @@ ITEM_PIPELINES = {
 # Enable or disable spiders middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "prototype.middlewares.TutorialSpiderMiddleware": 543,
+#    "book_scraper.middlewares.TutorialSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "prototype.middlewares.TutorialDownloaderMiddleware": 543,
+#    "book_scraper.middlewares.TutorialDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -72,7 +72,7 @@ ITEM_PIPELINES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    "prototype.pipelines.TutorialPipeline": 300,
+#    "book_scraper.pipelines.TutorialPipeline": 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
