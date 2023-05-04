@@ -8,17 +8,15 @@ The book records are posted to a PostgreSQL database.
 
 ## Getting Started
 
-### Installing PostgreSQL
+### Running the Application
 
-To install PostgreSQL on Windows:
+To run the Dockerized application:
 
-Use the [interactive installer](https://www.postgresql.org/download/windows/).
+`cd prototype`
 
-To install PostgreSQL on Linux:
+`docker-compose up`
 
-`sudo apt-get install postgresql`
-
-### Installing Python3
+#### Installing Python3
 
 Check if Python3 is installed on your operating system.
 
@@ -35,7 +33,7 @@ To install Python3 on Windows:
 Visit https://www.python.org/downloads/ and download the appropriate
 installer for your operating system (32-bit or 64-bit).
 
-### Installing Pip
+#### Installing Pip
 Check if pip is installed on your operating system.
 
 `pip --version`
@@ -52,29 +50,21 @@ To install pip on Windows:
 
 `python3 get-pip.py`
 
-### Installing Dependencies
+#### Initializing the Database
 
-Check if scrapy is installed.
+`docker-compose -f db/docker-compose.yaml up -d`
 
-`pip show scrapy`
-
-Install scrapy if it's not installed.
-
-`pip install scrapy`
-
-Check if psycopg2 is installed.
-
-### Running the Script
-
-Clone the repository.
-
-`git clone https://github.com/aardzark/Scraper.git`
-
-Navigate to `Scraper/prototype/`.
-
-Run the script.
-
-`python3 main.py`
+#### Running the Script
+`cd app`
+- Locally: 
+  - `pip install -r book_scraper/requirements.txt`
+  - `python3 book_scraper/main.py`
+- Python virtual environment:
+  - Windows (elevated command prompt): 
+    - `run.bat`
+  - Linux python venv: 
+    - `chmod +x run.sh`
+    - `run.sh`
 
 ## Contributors
 
