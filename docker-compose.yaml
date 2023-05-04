@@ -1,0 +1,22 @@
+version: "3"
+services:
+  db:
+    build: 
+      context: db
+      dockerfile: Dockerfile
+    networks:
+      - book-scraper-network
+    container_name: db
+  
+  scraper:
+    build:
+      context: app
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    networks:
+      - book-scraper-network
+
+networks:
+  book-scraper-network:
+    
