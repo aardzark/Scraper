@@ -16,7 +16,7 @@ services:
       - db
     networks:
       - book-scraper-network
+    command: dockerize -wait tcp://db:5432 -timeout 30s python book_scraper/main.py
 
 networks:
   book-scraper-network:
-    
