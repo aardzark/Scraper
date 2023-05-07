@@ -22,7 +22,14 @@ SPIDER_MIDDLEWARES = {
 }
 
 ITEM_PIPELINES = {
-    'book_scraper.spiders.pipelines.pipelines.PostgreSQLPipeline': 100
+    'book_scraper.spiders.pipelines.pipelines.BookImagePipeline': 1,
+    'book_scraper.spiders.pipelines.pipelines.PostgreSQLPipeline': 200,
+}
+
+IMAGES_STORE = 'img'
+
+IMAGES_THUMBS = {
+    'large': (250, 250)
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
