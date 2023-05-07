@@ -1,6 +1,13 @@
+# Specifies the Docker Compose version
 version: "3"
+
+# Defines the services that make up the application
 services:
+  # Defines a service called "db"
   db:
+    # Specifies how to build the Docker image for this service
     build: .
+    # Specifies the ports to expose on the container
     ports:
+      # Maps port 5433 on the host to port 5432 on the container
       - "5433:5432"
