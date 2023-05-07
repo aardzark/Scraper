@@ -1,38 +1,22 @@
-# Specifies the Docker Compose version
 version: "3"
-
-# Defines the services that make up the application
 services:
-  # Defines a service called "db"
   db:
-    # Specifies how to build the Docker image for this service
-    build:
-      # Specifies the build context, which is the directory containing the Dockerfile
+    build: 
       context: db
-      # Specifies the Dockerfile to use for building the image
       dockerfile: Dockerfile
     networks:
-      # Attaches the service to the "book-scraper-network" network
       - book-scraper-network
-    # Specifies the name to use for the container running this service
     container_name: db
-
-  # Defines a service called "scraper"
+  
   scraper:
-    # Specifies how to build the Docker image for this service
     build:
-      # Specifies the build context, which is the directory containing the Dockerfile
       context: app
-      # Specifies the Dockerfile to use for building the image
       dockerfile: Dockerfile
     depends_on:
-      # Specifies that this service depends on the "db" service
       - db
     networks:
-      # Attaches the service to the "book-scraper-network" network
       - book-scraper-network
+    command: dockerize -wait tcp://db:5432 -timeout 30s python book_scraper/main.py
 
-# Defines a network that the services can use to communicate with each other
 networks:
-  # Defines a network named "book-scraper-network"
   book-scraper-network:
