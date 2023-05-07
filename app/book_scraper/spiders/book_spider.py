@@ -35,6 +35,7 @@ class BookSpider(Spider):
 
         book_item['title'] = response.css('.product_page h1::text').get()
         book_item['description'] = response.css('#product_description + p::text').get()
+        book_item['image_urls'] = [response.urljoin(response.css('.item.active img::attr(src)').get())]
         book_item['upc'] = response.css('th:contains("UPC") + td::text').get()
         book_item['price'] = response.css('th:contains("Price (excl. tax)") + td::text').get().split("£")[1]
         book_item['tax'] = response.css('th:contains("Tax") + td::text').get().split("£")[1]
