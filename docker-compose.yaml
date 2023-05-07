@@ -1,40 +1,48 @@
-# Specifies the Docker Compose version
+# docker-compose.yaml
+
+# This is a Docker Compose file that defines two services: "db" and "scraper".
+# The "db" service uses a Dockerfile to build a Postgres image, and the "scraper"
+# service builds an application image that depends on the "db" service.
+# The "scraper" service also uses the dockerize command to wait for the "db" service to be ready before starting
+# the book scraper. Both services are attached to a network named "book-scraper-network".
+
+# Specifies the Docker Compose version.
 version: "3"
 
-# Defines the services that make up the application
+# Defines the services that make up the application.
 services:
-  # Defines a service called "db"
+  # Defines a service named "db".
   db:
-    # Specifies how to build the Docker image for this service
+    # Specifies how to build the Docker image for this service.
     build:
-      # Specifies the build context, which is the directory containing the Dockerfile
+      # Specifies the build context, which is the directory containing the Dockerfile.
       context: db
-      # Specifies the Dockerfile to use for building the image
+      # Specifies the Dockerfile to use when building the image.
       dockerfile: Dockerfile
     networks:
-      # Attaches the service to the "book-scraper-network" network
+      # Attaches this service to the "book-scraper-network" network.
       - book-scraper-network
-    # Specifies the name to use for the container running this service
+    # Specifies the name to assign to the container running this service.
     container_name: db
 
-  # Defines a service called "scraper"
+  # Defines a service named "scraper".
   scraper:
-    # Specifies how to build the Docker image for this service
+    # Specifies how to build the Docker image for this service.
     build:
-      # Specifies the build context, which is the directory containing the Dockerfile
+      # Specifies the build context, which is the directory containing the Dockerfile.
       context: app
-      # Specifies the Dockerfile to use for building the image
+      # Specifies the Dockerfile to use when building the image.
       dockerfile: Dockerfile
     depends_on:
-      # Specifies that this service depends on the "db" service
+      # Specifies that this service depends on the "db" service.
       - db
     networks:
-      # Attaches the service to the "book-scraper-network" network
+      # Attaches this service to the "book-scraper-network" network.
       - book-scraper-network
-    # Waits for the db service to accept incoming connections before starting the book scraper
+    # Waits for the db service to accept incoming connections before starting the Book Scraper.
     command: dockerize -wait tcp://db:5432 -timeout 30s python book_scraper/main.py
 
-# Defines a network that the services can use to communicate with each other
+# Defines a network that these services can use to communicate with each other.
 networks:
-  # Defines a network named "book-scraper-network"
+  # Defines a network named "book-scraper-network".
   book-scraper-network:
